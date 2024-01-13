@@ -1,9 +1,4 @@
-/* --- Libraries --- */
-#include <stdlib.h>
-#include <sys/termios.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <termios.h>
+#include "prototypes.h"
 
 /* --- Data --- */
 struct termios default_terminal_settings;
