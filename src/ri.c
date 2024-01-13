@@ -69,16 +69,13 @@ enum keys {
 
 void mapKey(char key) 
 {
-    // arrow keys
-    // Up arrow:    27 91 65
-    // Down:        27 91 66
-    // Right:       27 91 67
-    // Left:        27 91 68 
     if (key == ESC_SEQ) 
     {
         if (getchar() == '[') 
         {
-            switch (getchar()) 
+            // These are probably arrow keys if it made it this far
+            // TODO: Actually give arrow keys functionality
+            switch (getchar())
             {
                 case UP_ARROW:
                     write(STDOUT_FILENO, "yes", sizeof("yes"));
