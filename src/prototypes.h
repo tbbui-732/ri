@@ -5,6 +5,7 @@
 #ifndef PROTOTYPES_H
 #define PROTOTYPES_H
 
+
 /* --- Libraries --- */
 #include <stdlib.h>
 #include <sys/termios.h>
@@ -15,18 +16,24 @@
 /* --- Constants --- */
 #define TURN_ON 2000
 #define TURN_OFF 2001
+#define ESC_SEQ 27
 
 /* --- Program Failure --- */
 void die(char*);
 
-/* --- Terminal Specific Helper --- */
-int termiosEqual(struct termios*, struct termios*);
 
 /* --- Terminal Specific --- */
 void turnRawModeOn(void);
 void turnRawModeOff(void);
 
+
+/* --- Input --- */
+void mapKey(char key);
+void processUserInput(void);
+
+
 /* --- Main --- */
 int main(void);
+
 
 #endif // PROTOTYPES_H
