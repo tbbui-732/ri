@@ -11,6 +11,8 @@ void die(char* message) {
      * and exit with 1 status.
      */
 
+    turnRawModeOff();
+
     printf("%s\n", message);    
     exit(1);
 }
