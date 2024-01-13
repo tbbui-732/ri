@@ -5,7 +5,8 @@ struct termios default_terminal_settings;
 
 
 /* --- Program Failure --- */
-void die(char* message) {
+void die(char* message) 
+{
     /*
      * Write error message to standard output
      * and exit with 1 status.
@@ -19,7 +20,8 @@ void die(char* message) {
 
 
 /* --- Terminal Specific --- */
-void turnRawModeOn(void) {
+void turnRawModeOn(void) 
+{
     /* 
      * Sets terminal to raw mode. 
      * Raw mode reads values from stdin 
@@ -42,7 +44,8 @@ void turnRawModeOn(void) {
     tcsetattr(STDOUT_FILENO, TCSAFLUSH, &rawmode_settings);
 }
 
-void turnRawModeOff(void) {
+void turnRawModeOff(void) 
+{
     /*
      * Sets terminal back to canonical 
      * mode. 
@@ -57,19 +60,55 @@ void turnRawModeOff(void) {
 
 
 /* --- Input --- */
-void processUserInput(char read_value) {
-    printf("%c\r\n", read_value);
+enum keys {
+    UP_ARROW = 65,
+    DOWN_ARROW,
+    RIGHT_ARROW,
+    LEFT_ARROW
+};
+
+void mapKey(char key) 
+{
+    // arrow keys
+    // Up arrow:    27 91 65
+    // Down:        27 91 66
+    // Right:       27 91 67
+    // Left:        27 91 68 
+    if (key == ESC_SEQ) 
+    {
+        if (getchar() == '[') 
+        {
+            switch (getchar()) 
+            {
+                case UP_ARROW:
+                    write(STDOUT_FILENO, "yes", sizeof("yes"));
+                    break;
+                case DOWN_ARROW:
+                    write(STDOUT_FILENO, "yes", sizeof("yes"));
+                    break;
+                case RIGHT_ARROW:
+                    write(STDOUT_FILENO, "yes", sizeof("yes"));
+                    break;
+                case LEFT_ARROW:
+                    write(STDOUT_FILENO, "yes", sizeof("yes"));
+                    break;
+            }
+        }
+    }
+}
+
+void processUserInput(void) {
+    char read_value;
+    while (read(STDIN_FILENO, &read_value, 1) == 1 && read_value != 'q')
+        // printf("%d %lu\r\n", read_value, sizeof(read_value));
+        mapKey(read_value);
 }
 
 
 /* --- Main --- */
 int main(void) {
     turnRawModeOn();
-    
-    char read_value;
-    while (read(STDIN_FILENO, &read_value, 1) == 1 && read_value != 'q')
-        processUserInput(read_value);
-    
-    turnRawModeOff(); // NOTE: Okay here for now, may need to be removed in the future IDK
+    processUserInput();
+    turnRawModeOff();           // NOTE: Okay here for now, may need to be removed in the future IDK
     return 0;
 }
