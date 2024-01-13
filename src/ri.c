@@ -57,19 +57,19 @@ void turnRawModeOff(void) {
 
 
 /* --- Input --- */
-void processUserInput(void) {
-    char read_value;
-    read(STDIN_FILENO, &read_value, 1);
-
-    if (read_value != 1) die("read failed");
-    printf("%c\n", read_value);
+void processUserInput(char read_value) {
+    printf("%c\r\n", read_value);
 }
 
 
 /* --- Main --- */
 int main(void) {
     turnRawModeOn();
-    processUserInput();
-
+    
+    char read_value;
+    while (read(STDIN_FILENO, &read_value, 1) == 1 && read_value != 'q')
+        processUserInput(read_value);
+    
+    turnRawModeOff(); // NOTE: Okay here for now, may need to be removed in the future IDK
     return 0;
 }

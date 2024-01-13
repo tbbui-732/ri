@@ -27,7 +27,7 @@ void turnRawModeOff(void);
 
 
 /* --- Input --- */
-void processUserInput(void);
+void processUserInput(char);
 
 
 /* --- Main --- */
