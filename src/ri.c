@@ -41,8 +41,27 @@ void turnRawModeOn(void) {
      * Raw mode reads values from stdin 
      * immediately.
      */
+    
+    // Get the default terminal settings
+    tcgetattr(STDOUT_FILENO, &default_terminal_settings);
 
+    // Create termios struct to store raw mode settings
+    struct termios rawmode_settings = default_terminal_settings;
+  
+    // Set flags to make terminal "raw"
+    rawmode_settings.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+    rawmode_settings.c_oflag &= ~(OPOST);
+    rawmode_settings.c_cflag |= (CS8);
+    rawmode_settings.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 
+    // Set terminal to raw mode
+    tcsetattr(STDOUT_FILENO, TCSAFLUSH, &rawmode_settings);
+    
+    // Handle tcsetattr errors
+    struct termios check;
+    tcgetattr(STDOUT_FILENO, &check);
+    if (termiosEqual(&check, &rawmode_settings) == -1) 
+        die("tcsetattr(STDOUT_FILENO, TCSAFLUSH, &rawmode_settings)");
 }
 
 void turnRawModeOff(void) {
@@ -53,9 +72,21 @@ void turnRawModeOff(void) {
      * Set when exiting the program or 
      * when a failure occurs
      */
+    
+    // Set terminal back to default settings
+    tcsetattr(STDOUT_FILENO, TCSAFLUSH, &default_terminal_settings);
+    
+    // Handle tcsetattr errors
+    struct termios check;
+    tcgetattr(STDOUT_FILENO, &check);
+    if (termiosEqual(&check, &default_terminal_settings) == -1)
+        die("tcsetattr(STDOUT_FILENO, TCSAFLUSH, &default_terminal_settings)");
 }
+
 
 /* --- Main --- */
 int main(void) {
+    turnRawModeOn();
+
     return 0;
 }
