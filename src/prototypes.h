@@ -5,6 +5,7 @@
 #ifndef PROTOTYPES_H
 #define PROTOTYPES_H
 
+
 /* --- Libraries --- */
 #include <stdlib.h>
 #include <sys/termios.h>
@@ -19,14 +20,18 @@
 /* --- Program Failure --- */
 void die(char*);
 
-/* --- Terminal Specific Helper --- */
-int termiosEqual(struct termios*, struct termios*);
 
 /* --- Terminal Specific --- */
 void turnRawModeOn(void);
 void turnRawModeOff(void);
 
+
+/* --- Input --- */
+void processUserInput(void);
+
+
 /* --- Main --- */
 int main(void);
+
 
 #endif // PROTOTYPES_H
