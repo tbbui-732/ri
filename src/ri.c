@@ -1,7 +1,13 @@
 /* --- Libraries --- */
 #include <stdlib.h>
+#include <sys/termios.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <termios.h>
+
+/* --- Data --- */
+struct termios default_terminal_settings;
+
 
 /* --- Program Failure --- */
 void die(char* message) {
@@ -12,6 +18,20 @@ void die(char* message) {
 
     printf("%s\n", message);    
     exit(1);
+}
+
+/* --- Terminal Specific Helper --- */
+int termiosEqual(struct termios* first_term, struct termios* second_term) {
+    if ((first_term->c_iflag    == second_term->c_iflag)    &&
+        (first_term->c_oflag    == second_term->c_oflag)    &&
+        (first_term->c_cflag    == second_term->c_cflag)    &&
+        (first_term->c_lflag    == second_term->c_lflag)    &&
+        // (first_term->c_cc[NCCS] == second_term->c_cc[NCCS]) &&  NOTE: I don't know if this is important
+        (first_term->c_ispeed   == second_term->c_ispeed)   &&
+        (first_term->c_ospeed   == second_term->c_ospeed)) {
+        return 0;
+    }
+    return -1;
 }
 
 /* --- Terminal Specific --- */
