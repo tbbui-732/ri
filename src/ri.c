@@ -1,9 +1,17 @@
 /* --- Libraries --- */
+#include <stdlib.h>
+#include <unistd.h>
 #include <stdio.h>
 
 /* --- Program Failure --- */
-void die(char* die_message) {
-    
+void die(char* message) {
+    /*
+     * Write error message to standard output
+     * and exit with 1 status.
+     */
+
+    printf("%s\n", message);    
+    exit(1);
 }
 
 /* --- Terminal Specific --- */
@@ -29,6 +37,5 @@ void turnRawModeOff(void) {
 
 /* --- Main --- */
 int main(void) {
-    printf("Hello world");
     return 0;
 }
