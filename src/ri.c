@@ -18,17 +18,38 @@ void die(char* message) {
 }
 
 /* --- Terminal Specific Helper --- */
-int termiosEqual(struct termios* first_term, struct termios* second_term) {
+void validateTermiosSet(struct termios* first_term, struct termios* second_term, const int mode) {
+    /*
+     * Validates that the terminal is properly set 
+     * and exits based on whether rawMode is being turned on
+     * or off.
+     */
+
+    // Checks that mode is either ON or OFF.
+    if (mode != TURN_ON && mode != TURN_OFF) die("validateTermiosSet failed");
+    
+    // Verifies values of both termios structs.
+    int result = -1;
     if ((first_term->c_iflag    == second_term->c_iflag)    &&
         (first_term->c_oflag    == second_term->c_oflag)    &&
         (first_term->c_cflag    == second_term->c_cflag)    &&
         (first_term->c_lflag    == second_term->c_lflag)    &&
-        // (first_term->c_cc[NCCS] == second_term->c_cc[NCCS]) &&  NOTE: I don't know if this is important
+        // (first_term->c_cc[NCCS] == second_term->c_cc[NCCS]) &&  NOTE: I don't know if this is important so it's commented out
         (first_term->c_ispeed   == second_term->c_ispeed)   &&
         (first_term->c_ospeed   == second_term->c_ospeed)) {
-        return 0;
+        result = 0;
     }
-    return -1;
+    
+    // Exits accordingly if the structures are different.
+    if (result == -1) {
+        if (mode == TURN_ON)
+            die("tcsetattr failed while turning on raw mode");
+        else {
+            printf("tcsetattr failed while turning off raw mode\n \
+                    You might need to reset your terminal.");
+            exit(1);
+        }
+    }
 }
 
 /* --- Terminal Specific --- */
@@ -57,8 +78,7 @@ void turnRawModeOn(void) {
     // Handle tcsetattr errors
     struct termios check;
     tcgetattr(STDOUT_FILENO, &check);
-    if (termiosEqual(&check, &rawmode_settings) == -1) 
-        die("tcsetattr(STDOUT_FILENO, TCSAFLUSH, &rawmode_settings)");
+    validateTermiosSet(&check, &rawmode_settings, TURN_ON);
 }
 
 void turnRawModeOff(void) {
@@ -76,8 +96,7 @@ void turnRawModeOff(void) {
     // Handle tcsetattr errors
     struct termios check;
     tcgetattr(STDOUT_FILENO, &check);
-    if (termiosEqual(&check, &default_terminal_settings) == -1)
-        die("tcsetattr(STDOUT_FILENO, TCSAFLUSH, &default_terminal_settings)");
+    validateTermiosSet(&check, &default_terminal_settings, TURN_OFF);
 }
 
 
