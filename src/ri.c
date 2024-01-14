@@ -1,6 +1,7 @@
 #include "prototypes.h"
 
 /* --- Data --- */
+// TODO: Create a global data structure to store settings
 struct termios default_terminal_settings;
 
 
@@ -27,13 +28,13 @@ void turnRawModeOn(void)
      * Raw mode reads values from stdin 
      * immediately.
      */
-    
+
     // Get the default terminal settings
     tcgetattr(STDOUT_FILENO, &default_terminal_settings);
 
     // Create termios struct to store raw mode settings
     struct termios rawmode_settings = default_terminal_settings;
-  
+
     // Set flags to make terminal "raw"
     rawmode_settings.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
     rawmode_settings.c_oflag &= ~(OPOST);
@@ -53,7 +54,7 @@ void turnRawModeOff(void)
      * Set when exiting the program or 
      * when a failure occurs
      */
-    
+
     // Set terminal back to default settings
     tcsetattr(STDOUT_FILENO, TCSAFLUSH, &default_terminal_settings);
 }
@@ -94,7 +95,8 @@ void mapKey(char key)
     }
 }
 
-void processUserInput(void) {
+void processUserInput(void) 
+{
     char read_value;
     while (read(STDIN_FILENO, &read_value, 1) == 1 && read_value != 'q')
         // printf("%d %lu\r\n", read_value, sizeof(read_value));
@@ -103,7 +105,8 @@ void processUserInput(void) {
 
 
 /* --- Main --- */
-int main(void) {
+int main(void) 
+{
     turnRawModeOn();
     processUserInput();
     turnRawModeOff();           // NOTE: Okay here for now, may need to be removed in the future IDK
