@@ -1,8 +1,11 @@
 #include "prototypes.h"
 
 /* --- Data --- */
-// TODO: Create a global data structure to store settings
-struct termios default_terminal_settings;
+struct global_data {
+    struct termios default_term;
+};
+
+struct global_data gdata;
 
 
 /* --- Program Failure --- */
@@ -30,10 +33,10 @@ void turnRawModeOn(void)
      */
 
     // Get the default terminal settings
-    tcgetattr(STDOUT_FILENO, &default_terminal_settings);
+    tcgetattr(STDOUT_FILENO, &gdata.default_term);
 
     // Create termios struct to store raw mode settings
-    struct termios rawmode_settings = default_terminal_settings;
+    struct termios rawmode_settings = gdata.default_term;
 
     // Set flags to make terminal "raw"
     rawmode_settings.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
@@ -56,7 +59,7 @@ void turnRawModeOff(void)
      */
 
     // Set terminal back to default settings
-    tcsetattr(STDOUT_FILENO, TCSAFLUSH, &default_terminal_settings);
+    tcsetattr(STDOUT_FILENO, TCSAFLUSH, &gdata.default_term);
 }
 
 
