@@ -23,11 +23,6 @@
 void die(char*);
 
 
-/* --- Terminal Specific --- */
-void turnRawModeOn(void);
-void turnRawModeOff(void);
-
-
 /* --- Input --- */
 void mapKey(char key);
 void processUserInput(void);

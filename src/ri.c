@@ -16,7 +16,8 @@ void die(char* message)
      * and exit with 1 status.
      */
 
-    turnRawModeOff();
+    refresh();
+    endwin();
 
     printf("%s\n", message);    
     exit(1);
@@ -67,21 +68,22 @@ void processUserInput(void)
         attroff(A_BOLD);
         ch = getch();
     }
+    refresh();
 }
 
 
 /* --- Main --- */
 int main(void) 
 {
-    initscr();    
-    raw();
-    noecho();
-    keypad(stdscr, TRUE);
+    initscr();              // Initialize ncurses window
+    raw();                  // Directly read in input from stdin
+    noecho();               // Do not write back typed characters
+    keypad(stdscr, TRUE);   // Able to read in function keys
     
     processUserInput();
 
-    refresh();
-    endwin();
+    refresh();              // Update screen
+    endwin();               // Kill ncurses window
 
     return 0;
 }
