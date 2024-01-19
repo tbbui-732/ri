@@ -100,10 +100,13 @@ void mapKey(char key)
 
 void processUserInput(void) 
 {
-    char read_value;
-    while (read(STDIN_FILENO, &read_value, 1) == 1 && read_value != 'q')
-        // printf("%d %lu\r\n", read_value, sizeof(read_value));
-        mapKey(read_value);
+    char ch = getch();
+    while (ch != 17) {
+        attron(A_BOLD);
+        printw("%d, %c\n", ch, ch);
+        attroff(A_BOLD);
+        ch = getch();
+    }
 }
 
 
@@ -115,14 +118,7 @@ int main(void)
     noecho();
     keypad(stdscr, TRUE);
     
-    char ch = getch();
-    while (ch != 'q') 
-    {
-        attron(A_BOLD);
-        printw("%d, %c\n", ch, ch);
-        attroff(A_BOLD);
-        ch = getch();
-    }
+    processUserInput();
 
     refresh();
     endwin();
