@@ -23,46 +23,6 @@ void die(char* message)
 }
 
 
-/* --- Terminal Specific --- */
-void turnRawModeOn(void) 
-{
-    /* 
-     * Sets terminal to raw mode. 
-     * Raw mode reads values from stdin 
-     * immediately.
-     */
-
-    // Get the default terminal settings
-    tcgetattr(STDOUT_FILENO, &GDATA.default_term);
-
-    // Create termios struct to store raw mode settings
-    struct termios rawmode_settings = GDATA.default_term;
-
-    // Set flags to make terminal "raw"
-    rawmode_settings.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-    rawmode_settings.c_oflag &= ~(OPOST);
-    rawmode_settings.c_cflag |= (CS8);
-    rawmode_settings.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-
-    // Set terminal to raw mode
-    tcsetattr(STDOUT_FILENO, TCSAFLUSH, &rawmode_settings);
-}
-
-void turnRawModeOff(void) 
-{
-    /*
-     * Sets terminal back to canonical 
-     * mode. 
-     *
-     * Set when exiting the program or 
-     * when a failure occurs
-     */
-
-    // Set terminal back to default settings
-    tcsetattr(STDOUT_FILENO, TCSAFLUSH, &GDATA.default_term);
-}
-
-
 /* --- Input --- */
 enum keys {
     UP_ARROW = 65,
@@ -100,18 +60,28 @@ void mapKey(char key)
 
 void processUserInput(void) 
 {
-    char read_value;
-    while (read(STDIN_FILENO, &read_value, 1) == 1 && read_value != 'q')
-        // printf("%d %lu\r\n", read_value, sizeof(read_value));
-        mapKey(read_value);
+    char ch = getch();
+    while (ch != 17) {
+        attron(A_BOLD);
+        printw("%d, %c\n", ch, ch);
+        attroff(A_BOLD);
+        ch = getch();
+    }
 }
 
 
 /* --- Main --- */
 int main(void) 
 {
-    turnRawModeOn();
+    initscr();    
+    raw();
+    noecho();
+    keypad(stdscr, TRUE);
+    
     processUserInput();
-    turnRawModeOff();           // NOTE: Okay here for now, may need to be removed in the future IDK
+
+    refresh();
+    endwin();
+
     return 0;
 }
