@@ -110,8 +110,22 @@ void processUserInput(void)
 /* --- Main --- */
 int main(void) 
 {
-    turnRawModeOn();
-    processUserInput();
-    turnRawModeOff();           // NOTE: Okay here for now, may need to be removed in the future IDK
+    initscr();    
+    raw();
+    noecho();
+    keypad(stdscr, TRUE);
+    
+    char ch = getch();
+    while (ch != 'q') 
+    {
+        attron(A_BOLD);
+        printw("%d, %c\n", ch, ch);
+        attroff(A_BOLD);
+        ch = getch();
+    }
+
+    refresh();
+    endwin();
+
     return 0;
 }
