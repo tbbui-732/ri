@@ -3,14 +3,6 @@
 /* --- Definitions --- */
 #define KEY_CTRL(key) ((key) & 0x1F)
 
-/* --- Data --- */
-struct global_data
-{
-    struct termios default_term;
-};
-
-struct global_data GDATA;
-
 /* --- Program Failure --- */
 void die(char *message)
 {
