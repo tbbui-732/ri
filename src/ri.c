@@ -75,15 +75,15 @@ void processUserInput(void)
 /* --- Main --- */
 int main(void) 
 {
-    initscr();              // Initialize ncurses window
-    raw();                  // Directly read in input from stdin
-    noecho();               // Do not write back typed characters
-    keypad(stdscr, TRUE);   // Able to read in function keys
-    
+    initscr();              // Initialize ncurses
+    raw();
+    noecho();
+    keypad(stdscr, TRUE);
+
     processUserInput();
 
-    refresh();              // Update screen
-    endwin();               // Kill ncurses window
+    refresh();
+    endwin();               // Kill ncurses
 
     return 0;
 }
