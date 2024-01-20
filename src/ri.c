@@ -1,5 +1,8 @@
 #include "prototypes.h"
 
+/* --- Definitions --- */
+#define CTRL_KEY(key)       key & 0x1F    
+
 /* --- Data --- */
 struct global_data {
     struct termios default_term;
@@ -31,33 +34,6 @@ enum keys {
     RIGHT_ARROW,
     LEFT_ARROW
 };
-
-void mapKey(char key) 
-{
-    if (key == ESC_SEQ) 
-    {
-        if (getchar() == '[') 
-        {
-            // These are probably arrow keys if it made it this far
-            // TODO: Actually give arrow keys functionality
-            switch (getchar())
-            {
-                case UP_ARROW:
-                    write(STDOUT_FILENO, "yes", sizeof("yes"));
-                    break;
-                case DOWN_ARROW:
-                    write(STDOUT_FILENO, "yes", sizeof("yes"));
-                    break;
-                case RIGHT_ARROW:
-                    write(STDOUT_FILENO, "yes", sizeof("yes"));
-                    break;
-                case LEFT_ARROW:
-                    write(STDOUT_FILENO, "yes", sizeof("yes"));
-                    break;
-            }
-        }
-    }
-}
 
 void processUserInput(void) 
 {

@@ -5,6 +5,7 @@
 #ifndef PROTOTYPES_H
 #define PROTOTYPES_H
 
+/* --- Definitions --- */
 
 /* --- Libraries --- */
 #include <stdlib.h>
@@ -24,7 +25,6 @@ void die(char*);
 
 
 /* --- Input --- */
-void mapKey(char key);
 void processUserInput(void);
 
 
