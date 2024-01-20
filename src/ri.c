@@ -1,7 +1,7 @@
 #include "prototypes.h"
 
 /* --- Definitions --- */
-#define CTRL_KEY(key)       key & 0x1F    
+#define KEY_CTRL(key) ((key) & 0x1F)
 
 /* --- Data --- */
 struct global_data {
@@ -38,7 +38,7 @@ enum keys {
 void processUserInput(void) 
 {
     char ch = getch();
-    while (ch != 17) {
+    while (ch != KEY_CTRL('q')) {
         attron(A_BOLD);
         printw("%d, %c\n", ch, ch);
         attroff(A_BOLD);
