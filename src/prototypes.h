@@ -5,13 +5,17 @@
 #ifndef PROTOTYPES_H
 #define PROTOTYPES_H
 
+/* --- Definitions --- */
+#define KEY_CTRL(key) ((key) & 0x1F)
+#define KEY_END 360
+#define KEY_PGUP 339
+#define KEY_PGDN 338
 
 /* --- Libraries --- */
 #include <stdlib.h>
 #include <sys/termios.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <termios.h>
 #include <ncurses.h>
 
 /* --- Constants --- */
@@ -24,7 +28,6 @@ void die(char*);
 
 
 /* --- Input --- */
-void mapKey(char key);
 void processUserInput(void);
 
 

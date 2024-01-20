@@ -1,15 +1,7 @@
 #include "prototypes.h"
 
-/* --- Data --- */
-struct global_data {
-    struct termios default_term;
-};
-
-struct global_data GDATA;
-
-
 /* --- Program Failure --- */
-void die(char* message) 
+void die(char *message)
 {
     /*
      * Write error message to standard output
@@ -19,63 +11,62 @@ void die(char* message)
     refresh();
     endwin();
 
-    printf("%s\n", message);    
+    printf("%s\n", message);
     exit(1);
 }
 
-
 /* --- Input --- */
-enum keys {
-    UP_ARROW = 65,
-    DOWN_ARROW,
-    RIGHT_ARROW,
-    LEFT_ARROW
-};
-
-void mapKey(char key) 
+void processUserInput(void)
 {
-    if (key == ESC_SEQ) 
+    int ch;
+    ch = getch();
+    while (ch != KEY_CTRL('q'))
     {
-        if (getchar() == '[') 
+        if (ch == KEY_UP || ch == 'k')
         {
-            // These are probably arrow keys if it made it this far
-            // TODO: Actually give arrow keys functionality
-            switch (getchar())
-            {
-                case UP_ARROW:
-                    write(STDOUT_FILENO, "yes", sizeof("yes"));
-                    break;
-                case DOWN_ARROW:
-                    write(STDOUT_FILENO, "yes", sizeof("yes"));
-                    break;
-                case RIGHT_ARROW:
-                    write(STDOUT_FILENO, "yes", sizeof("yes"));
-                    break;
-                case LEFT_ARROW:
-                    write(STDOUT_FILENO, "yes", sizeof("yes"));
-                    break;
-            }
+            printw("going up\n");
         }
-    }
-}
-
-void processUserInput(void) 
-{
-    char ch = getch();
-    while (ch != 17) {
-        attron(A_BOLD);
-        printw("%d, %c\n", ch, ch);
-        attroff(A_BOLD);
+        else if (ch == KEY_DOWN || ch == 'j')
+        {
+            printw("going down\n");
+        }
+        else if (ch == KEY_LEFT || ch == 'h')
+        {
+            printw("going left\n");
+        }
+        else if (ch == KEY_RIGHT || ch == 'l')
+        {
+            printw("going right\n");
+        }
+        else if (ch == KEY_HOME)
+        {
+            printw("going home\n");
+        }
+        else if (ch == KEY_END)
+        {
+            printw("going end\n");
+        }
+        else if (ch == KEY_PGUP)
+        {
+            printw("going page up\n");
+        }
+        else if (ch == KEY_PGDN)
+        {
+            printw("going page down\n");
+        }
+        else {
+            printw("%d", ch);
+        }
         ch = getch();
     }
+
     refresh();
 }
 
-
 /* --- Main --- */
-int main(void) 
+int main(void)
 {
-    initscr();              // Initialize ncurses
+    initscr(); // Initialize ncurses
     raw();
     noecho();
     keypad(stdscr, TRUE);
@@ -83,7 +74,7 @@ int main(void)
     processUserInput();
 
     refresh();
-    endwin();               // Kill ncurses
+    endwin(); // Kill ncurses
 
     return 0;
 }
