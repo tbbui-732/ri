@@ -27,41 +27,16 @@ void processUserInput(void)
         getyx(stdscr, ypos, xpos);
         getmaxyx(stdscr, max_y, max_x);
 
-        if (ch == KEY_UP || ch == 'k')
-        {
-            --ypos;
-        }
-        else if (ch == KEY_DOWN || ch == 'j')
-        {
-            ++ypos;
-        }
-        else if (ch == KEY_LEFT || ch == 'h')
-        {
-            --xpos;
-        }
-        else if (ch == KEY_RIGHT || ch == 'l')
-        {
-            ++xpos;
-        }
-        else if (ch == KEY_HOME)
-        {
-            xpos = 0;
-        }
-        else if (ch == KEY_END)
-        {
-            xpos = max_x - 1;
-        }
-        else if (ch == KEY_PGUP)
-        {
-            ypos = 0;
-        }
-        else if (ch == KEY_PGDN)
-        {
-            ypos = max_y - 1;
-        }
-        else {
-            printw("%c\n", ch);
-        }
+        if (ch == KEY_UP || ch == 'k')          --ypos;
+        else if (ch == KEY_DOWN || ch == 'j')   ++ypos;
+        else if (ch == KEY_LEFT || ch == 'h')   --xpos;
+        else if (ch == KEY_RIGHT || ch == 'l')  ++xpos;
+        else if (ch == KEY_HOME)                xpos = 0;
+        else if (ch == KEY_END)                 xpos = max_x - 1;
+        else if (ch == KEY_PGUP)                ypos = 0;
+        else if (ch == KEY_PGDN)                ypos = max_y - 1;
+        else printw("%c\n", ch);
+
         move(ypos, xpos);
         ch = getch();
         refresh();
