@@ -39,7 +39,6 @@ void processUserInput(void)
 
         move(ypos, xpos);
         ch = getch();
-        refresh();
     }
 
     refresh();
