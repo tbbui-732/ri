@@ -6,6 +6,10 @@
 #define PROTOTYPES_H
 
 /* --- Definitions --- */
+#define KEY_CTRL(key) ((key) & 0x1F)
+#define KEY_END 360
+#define KEY_PGUP 339
+#define KEY_PGDN 338
 
 /* --- Libraries --- */
 #include <stdlib.h>

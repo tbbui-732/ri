@@ -1,8 +1,5 @@
 #include "prototypes.h"
 
-/* --- Definitions --- */
-#define KEY_CTRL(key) ((key) & 0x1F)
-
 /* --- Program Failure --- */
 void die(char *message)
 {
@@ -25,41 +22,42 @@ void processUserInput(void)
     ch = getch();
     while (ch != KEY_CTRL('q'))
     {
-        printw("%d\n", ch);
-        // if (ch == KEY_UP)
-        // {
-        //     printw("going up\n");
-        //     getch();
-        // }
-        // else if (ch == KEY_DOWN)
-        // {
-        //     printw("going down\n");
-        //     getch();
-        // }
-        // else if (ch == KEY_LEFT)
-        // {
-        //     printw("going left\n");
-        //     getch();
-        // }
-        // else if (ch == KEY_RIGHT)
-        // {
-        //     printw("going right\n");
-        //     getch();
-        // }
-        // else if (ch == KEY_HOME)
-        // {
-        //     printw("going home\n");
-        //     getch();
-        // }
-        // else if (ch == KEY_LL)
-        // {
-        //     printw("going end\n");
-        //     getch();
-        // }
-        // else {
-        //     printw("%d", ch);
-        //     getch();
-        // }
+        if (ch == KEY_UP || ch == 'k')
+        {
+            printw("going up\n");
+        }
+        else if (ch == KEY_DOWN || ch == 'j')
+        {
+            printw("going down\n");
+        }
+        else if (ch == KEY_LEFT || ch == 'h')
+        {
+            printw("going left\n");
+        }
+        else if (ch == KEY_RIGHT || ch == 'l')
+        {
+            printw("going right\n");
+        }
+        else if (ch == KEY_HOME)
+        {
+            printw("going home\n");
+        }
+        else if (ch == KEY_END)
+        {
+            printw("going end\n");
+        }
+        else if (ch == KEY_PGUP)
+        {
+            printw("going page up\n");
+        }
+        else if (ch == KEY_PGDN)
+        {
+            printw("going page down\n");
+        }
+        else {
+            printw("%d", ch);
+        }
+        ch = getch();
     }
 
     refresh();
