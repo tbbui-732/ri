@@ -22,42 +22,49 @@ void processUserInput(void)
     ch = getch();
     while (ch != KEY_CTRL('q'))
     {
+        int ypos, xpos;
+        int max_y, max_x;
+        getyx(stdscr, ypos, xpos);
+        getmaxyx(stdscr, max_y, max_x);
+
         if (ch == KEY_UP || ch == 'k')
         {
-            printw("going up\n");
+            --ypos;
         }
         else if (ch == KEY_DOWN || ch == 'j')
         {
-            printw("going down\n");
+            ++ypos;
         }
         else if (ch == KEY_LEFT || ch == 'h')
         {
-            printw("going left\n");
+            --xpos;
         }
         else if (ch == KEY_RIGHT || ch == 'l')
         {
-            printw("going right\n");
+            ++xpos;
         }
         else if (ch == KEY_HOME)
         {
-            printw("going home\n");
+            xpos = 0;
         }
         else if (ch == KEY_END)
         {
-            printw("going end\n");
+            xpos = max_x - 1;
         }
         else if (ch == KEY_PGUP)
         {
-            printw("going page up\n");
+            ypos = 0;
         }
         else if (ch == KEY_PGDN)
         {
-            printw("going page down\n");
+            ypos = max_y - 1;
         }
         else {
-            printw("%d", ch);
+            printw("%c\n", ch);
         }
+        move(ypos, xpos);
         ch = getch();
+        refresh();
     }
 
     refresh();
@@ -72,6 +79,8 @@ void drawToTerminal(void) {
     for (y = 0; y < height; ++y) {      // Draw tildes like unused columns in vim
         mvaddch(y, x, '~');
     }
+
+    move(0, 0);                         // Resets cursor position
 
     refresh();
 }
