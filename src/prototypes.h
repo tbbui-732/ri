@@ -31,6 +31,10 @@ void die(char*);
 void processUserInput(void);
 
 
+/* --- Output --- */
+void drawToTerminal(void);
+
+
 /* --- Main --- */
 int main(void);
 

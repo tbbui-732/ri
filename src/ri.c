@@ -63,6 +63,20 @@ void processUserInput(void)
     refresh();
 }
 
+
+/* --- Output --- */
+void drawToTerminal(void) {
+    int x = 0, y;
+    int height = getmaxy(stdscr);
+
+    for (y = 0; y < height; ++y) {      // Draw tildes like unused columns in vim
+        mvaddch(y, x, '~');
+    }
+
+    refresh();
+}
+
+
 /* --- Main --- */
 int main(void)
 {
@@ -70,7 +84,8 @@ int main(void)
     raw();
     noecho();
     keypad(stdscr, TRUE);
-
+    
+    drawToTerminal();
     processUserInput();
 
     refresh();
