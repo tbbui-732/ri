@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <ncurses.h>
+#include <math.h>
 
 /* --- Constants --- */
 #define TURN_ON 2000
