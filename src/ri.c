@@ -1,6 +1,13 @@
 #include "prototypes.h"
 #include <stdio.h>
 
+/* --- Global Data --- */
+struct globalData {
+    // TODO: Insert some of the struct elements in here
+};
+
+struct globalData data;
+
 /* --- Program Failure --- */
 void die(char *message)
 {
@@ -76,6 +83,10 @@ void drawToTerminal(void)
     refresh();
 }
 
+/* --- Initialize Global Data --- */
+// TODO: Write a function to initialize some global data
+// TODO: Global data struct should include -> WINDOW(s) for line number and tildes
+// TODO: Also thinking about creating a separate window for actual text editor screen
 
 /* --- Main --- */
 int main(void)
@@ -84,7 +95,7 @@ int main(void)
     raw();
     noecho();
     keypad(stdscr, TRUE);
-    
+
     drawToTerminal();
     processUserInput();
 
