@@ -10,6 +10,8 @@
 #define KEY_END 360
 #define KEY_PGUP 339
 #define KEY_PGDN 338
+#define VBAR_WIDTH 3            // arbitrary value for now
+#define STATUS_BAR_HEIGHT 3     // arbitrary value for now
 
 /* --- Libraries --- */
 #include <stdlib.h>
@@ -34,6 +36,11 @@ void processUserInput(void);
 
 /* --- Output --- */
 void drawToTerminal(void);
+
+
+/* --- Initialize Global Data --- */
+void initializeNewWindow(WINDOW*, int, int, int, int);
+void initializeGlobalData(void);
 
 
 /* --- Main --- */

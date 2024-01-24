@@ -1,12 +1,13 @@
 #include "prototypes.h"
-#include <stdio.h>
 
 /* --- Global Data --- */
 struct globalData {
-    // TODO: Insert some of the struct elements in here
+    WINDOW* vbar;           // Vertical bar: Includes line-numbers, git signs, tildes.
+    WINDOW* screen;         // Screen: Section where the user can interact with text.
+    WINDOW* sbar;           // Status bar: Information for the user at the bottom of the screen.
 };
 
-struct globalData data;
+struct globalData editor;
 
 /* --- Program Failure --- */
 void die(char *message)
@@ -83,24 +84,52 @@ void drawToTerminal(void)
     refresh();
 }
 
+
 /* --- Initialize Global Data --- */
-// TODO: Write a function to initialize some global data
-// TODO: Global data struct should include -> WINDOW(s) for line number and tildes
-// TODO: Also thinking about creating a separate window for actual text editor screen
+void initializeNewWindow(WINDOW* win, int nrows, int ncols, int start_y, int start_x) {
+    win = newwin(nrows, ncols, start_y, start_x);
+    wrefresh(win);
+}
+
+void initializeGlobalData(void) {
+    int term_ncols, term_nrows;                                         // Get terminal dimensions
+    getmaxyx(stdscr, term_nrows, term_ncols);
+                                                                        
+    initializeNewWindow(editor.vbar,                                    // NOTE: columns is synonymous to width as rows is to height
+                        term_nrows - STATUS_BAR_HEIGHT,                 // Initialize vertical bar
+                        VBAR_WIDTH,
+                        0, 
+                        0);
+
+    initializeNewWindow(editor.screen,                                  // Initialize text-editor screen
+                        term_nrows - STATUS_BAR_HEIGHT, 
+                        term_ncols - VBAR_WIDTH,
+                        0, 
+                        VBAR_WIDTH);
+
+    initializeNewWindow(editor.sbar,                                    // Initialize status bar
+                        STATUS_BAR_HEIGHT, 
+                        term_ncols,
+                        term_nrows - STATUS_BAR_HEIGHT, 
+                        0);
+}
+
+
 
 /* --- Main --- */
 int main(void)
 {
-    initscr(); // Initialize ncurses
+    initscr();                  // Initialize ncurses
     raw();
     noecho();
     keypad(stdscr, TRUE);
-
+    
+    initializeGlobalData();
     drawToTerminal();
     processUserInput();
 
     refresh();
-    endwin(); // Kill ncurses
+    endwin();                   // Kill ncurses
 
     return 0;
 }
