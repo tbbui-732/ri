@@ -55,7 +55,6 @@ void processUserInput(void)
 
 
 /* --- Output --- */
-
 void drawToVBar(void) {
     int x = 0, y, height;
     height = getmaxy(editor.vbar);
@@ -65,12 +64,14 @@ void drawToVBar(void) {
     wmove(editor.vbar, 0, 0);
 
     for (y = 0; y < height; ++y) {
+        // TODO: Implement line numbers
         // char ln[10];
         // sprintf(ln, "%d", y);
 
         if (y == 0) {
             mvwaddch(editor.vbar, y, x + 2, '~');
         } else {
+            // TODO: Implement line numbers
             // int num_digit = (int)log10(abs(y)) + 1;
             // int padding = max_width - num_digit;
             // mvwprintw(editor.vbar, y, x, "%*s%s", padding, " ", ln);
