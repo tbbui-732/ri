@@ -39,7 +39,7 @@ void drawToTerminal(void);
 
 
 /* --- Initialize Global Data --- */
-void initializeNewWindow(WINDOW*, int, int, int, int);
+void initializeNewWindow(WINDOW**, int, int, int, int);
 void initializeGlobalData(void);
 
 

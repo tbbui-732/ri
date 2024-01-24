@@ -60,58 +60,65 @@ void processUserInput(void)
 // TODO: Draw this on a separate window, NOT on stdscr!
 void drawToTerminal(void) 
 {
-    int x = 0, y;
-    int height = getmaxy(stdscr);
+    int x, y, height;
+    x = 0;
+    height = getmaxy(editor.vbar);
 
+    wmove(editor.vbar, 0, 0);
     for (y = 0; y < height; ++y) 
     {      
         char ln[10];
         sprintf(ln, "%d ", y);
-        mvaddstr(y, x, ln);                 // Line numbers
+        // mvaddstr(y, x, ln);                 // Line numbers
 
         if (y == 0) 
-        {                                   // Handle the special case when the number is 0
-            mvaddch(y, x + 2, '~');         // Draw tildes like unused columns in vim
+        {                                                   // Handle the special case when the number is 0
+            mvwaddch(editor.vbar, y, x + 2, '~');           // Draw tildes like unused columns in vim
         } 
         else 
         {
             int num_digit = (int)log10(abs(y)) + 1;
-            mvaddch(y, x + num_digit + 1, '~');
+            mvwaddch(editor.vbar, y, x + num_digit + 1, '~');
         }
+        wrefresh(editor.vbar);
     }
 
-    move(0, 0);                             // Resets cursor position
-    refresh();
+    wmove(editor.vbar, 0, 0);
+    wrefresh(editor.vbar);
 }
 
 
 /* --- Initialize Global Data --- */
-void initializeNewWindow(WINDOW* win, int nrows, int ncols, int start_y, int start_x) {
-    win = newwin(nrows, ncols, start_y, start_x);
-    wrefresh(win);
+void initializeNewWindow(WINDOW** win, int nrows, int ncols, int start_y, int start_x) {
+    *win = newwin(nrows, ncols, start_y, start_x);
+    // box(*win, 0, 0);
+    wrefresh(*win);
 }
 
 void initializeGlobalData(void) {
     int term_ncols, term_nrows;                                         // Get terminal dimensions
     getmaxyx(stdscr, term_nrows, term_ncols);
                                                                         
-    initializeNewWindow(editor.vbar,                                    // NOTE: columns is synonymous to width as rows is to height
+    initializeNewWindow(&editor.vbar,                                    // NOTE: columns is synonymous to width as rows is to height
                         term_nrows - STATUS_BAR_HEIGHT,                 // Initialize vertical bar
                         VBAR_WIDTH,
                         0, 
                         0);
+    
+    // TODO; Once the vertical bar works, come back to these windows
+    // initializeNewWindow(&editor.screen,                                  // Initialize text-editor screen
+    //                     term_nrows - STATUS_BAR_HEIGHT, 
+    //                     term_ncols - VBAR_WIDTH,
+    //                     0, 
+    //                     VBAR_WIDTH);
+    //
+    // initializeNewWindow(&editor.sbar,                                    // Initialize status bar
+    //                     STATUS_BAR_HEIGHT, 
+    //                     term_ncols,
+    //                     term_nrows - STATUS_BAR_HEIGHT, 
+    //                     0);
 
-    initializeNewWindow(editor.screen,                                  // Initialize text-editor screen
-                        term_nrows - STATUS_BAR_HEIGHT, 
-                        term_ncols - VBAR_WIDTH,
-                        0, 
-                        VBAR_WIDTH);
-
-    initializeNewWindow(editor.sbar,                                    // Initialize status bar
-                        STATUS_BAR_HEIGHT, 
-                        term_ncols,
-                        term_nrows - STATUS_BAR_HEIGHT, 
-                        0);
+    refresh();
 }
 
 
