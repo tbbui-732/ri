@@ -35,11 +35,10 @@ void processUserInput(void);
 
 
 /* --- Output --- */
-void drawToTerminal(void);
-
+void drawToVBar(void);
 
 /* --- Initialize Global Data --- */
-void initializeNewWindow(WINDOW**, int, int, int, int);
+WINDOW* initializeNewWindow(int, int, int, int);
 void initializeGlobalData(void);
 
 

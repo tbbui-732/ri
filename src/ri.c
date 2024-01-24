@@ -55,55 +55,51 @@ void processUserInput(void)
 
 
 /* --- Output --- */
-// TODO: Only draw line number if the current line contains a buffer
-// TODO: Rename this function name
-// TODO: Draw this on a separate window, NOT on stdscr!
-void drawToTerminal(void) 
-{
-    int x, y, height;
-    x = 0;
+
+void drawToVBar(void) {
+    int x = 0, y, height;
     height = getmaxy(editor.vbar);
 
-    wmove(editor.vbar, 0, 0);
-    for (y = 0; y < height; ++y) 
-    {      
-        char ln[10];
-        sprintf(ln, "%d ", y);
-        // mvaddstr(y, x, ln);                 // Line numbers
+    int max_width = (int)log10(abs(height - 1)) + 1; // Maximum width of line numbers
 
-        if (y == 0) 
-        {                                                   // Handle the special case when the number is 0
-            mvwaddch(editor.vbar, y, x + 2, '~');           // Draw tildes like unused columns in vim
-        } 
-        else 
-        {
-            int num_digit = (int)log10(abs(y)) + 1;
-            mvwaddch(editor.vbar, y, x + num_digit + 1, '~');
+    wmove(editor.vbar, 0, 0);
+
+    for (y = 0; y < height; ++y) {
+        // char ln[10];
+        // sprintf(ln, "%d", y);
+
+        if (y == 0) {
+            mvwaddch(editor.vbar, y, x + 2, '~');
+        } else {
+            // int num_digit = (int)log10(abs(y)) + 1;
+            // int padding = max_width - num_digit;
+            // mvwprintw(editor.vbar, y, x, "%*s%s", padding, " ", ln);
+            mvwaddch(editor.vbar, y, x + max_width, '~');
         }
-        wrefresh(editor.vbar);
     }
 
-    wmove(editor.vbar, 0, 0);
     wrefresh(editor.vbar);
+    refresh();
 }
 
 
+
 /* --- Initialize Global Data --- */
-void initializeNewWindow(WINDOW** win, int nrows, int ncols, int start_y, int start_x) {
-    *win = newwin(nrows, ncols, start_y, start_x);
-    // box(*win, 0, 0);
-    wrefresh(*win);
+WINDOW* initializeNewWindow(int nrows, int ncols, int start_y, int start_x) {
+    WINDOW* new_win = newwin(nrows, ncols, start_y, start_x);
+    box(new_win, 0, 0);
+    wrefresh(new_win);
+    return new_win;
 }
 
 void initializeGlobalData(void) {
     int term_ncols, term_nrows;                                         // Get terminal dimensions
     getmaxyx(stdscr, term_nrows, term_ncols);
                                                                         
-    initializeNewWindow(&editor.vbar,                                    // NOTE: columns is synonymous to width as rows is to height
-                        term_nrows - STATUS_BAR_HEIGHT,                 // Initialize vertical bar
-                        VBAR_WIDTH,
-                        0, 
-                        0);
+    editor.vbar = initializeNewWindow(term_nrows - STATUS_BAR_HEIGHT,       // Initialize vertical bar
+                                      VBAR_WIDTH,
+                                      0, 
+                                      0);
     
     // TODO; Once the vertical bar works, come back to these windows
     // initializeNewWindow(&editor.screen,                                  // Initialize text-editor screen
@@ -132,7 +128,7 @@ int main(void)
     keypad(stdscr, TRUE);
     
     initializeGlobalData();
-    drawToTerminal();
+    drawToVBar();
     processUserInput();
 
     refresh();
