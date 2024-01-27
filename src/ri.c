@@ -1,10 +1,11 @@
 #include "prototypes.h"
 
 /* --- Global Data --- */
-struct globalData {
-    WINDOW* vbar;           // Vertical bar: Includes line-numbers, git signs, tildes.
-    WINDOW* screen;         // Screen: Section where the user can interact with text.
-    WINDOW* sbar;           // Status bar: Information for the user at the bottom of the screen.
+struct globalData
+{
+    WINDOW *vbar;   // Vertical bar: Includes line-numbers, git signs, tildes.
+    WINDOW *screen; // Screen: Section where the user can interact with text.
+    WINDOW *sbar;   // Status bar: Information for the user at the bottom of the screen.
 };
 
 struct globalData editor;
@@ -36,15 +37,24 @@ void processUserInput(void)
         getyx(stdscr, ypos, xpos);
         getmaxyx(stdscr, max_y, max_x);
 
-        if (ch == KEY_UP || ch == 'k')          --ypos;
-        else if (ch == KEY_DOWN || ch == 'j')   ++ypos;
-        else if (ch == KEY_LEFT || ch == 'h')   --xpos;
-        else if (ch == KEY_RIGHT || ch == 'l')  ++xpos;
-        else if (ch == KEY_HOME)                xpos = 0;
-        else if (ch == KEY_END)                 xpos = max_x - 1;
-        else if (ch == KEY_PGUP)                ypos = 0;
-        else if (ch == KEY_PGDN)                ypos = max_y - 1;
-        else printw("%c\n", ch);
+        if (ch == KEY_UP || ch == 'k')
+            --ypos;
+        else if (ch == KEY_DOWN || ch == 'j')
+            ++ypos;
+        else if (ch == KEY_LEFT || ch == 'h')
+            --xpos;
+        else if (ch == KEY_RIGHT || ch == 'l')
+            ++xpos;
+        else if (ch == KEY_HOME)
+            xpos = 0;
+        else if (ch == KEY_END)
+            xpos = max_x - 1;
+        else if (ch == KEY_PGUP)
+            ypos = 0;
+        else if (ch == KEY_PGDN)
+            ypos = max_y - 1;
+        else
+            printw("%c\n", ch);
 
         move(ypos, xpos);
         ch = getch();
@@ -53,9 +63,9 @@ void processUserInput(void)
     refresh();
 }
 
-
 /* --- Output --- */
-void drawToVBar(void) {
+void drawToVBar(void)
+{
     int x = 0, y, height;
     height = getmaxy(editor.vbar);
 
@@ -63,14 +73,18 @@ void drawToVBar(void) {
 
     wmove(editor.vbar, 0, 0);
 
-    for (y = 0; y < height; ++y) {
+    for (y = 0; y < height; ++y)
+    {
         // TODO: Implement line numbers
         // char ln[10];
         // sprintf(ln, "%d", y);
 
-        if (y == 0) {
+        if (y == 0)
+        {
             mvwaddch(editor.vbar, y, x + 2, '~');
-        } else {
+        }
+        else
+        {
             // TODO: Implement line numbers
             // int num_digit = (int)log10(abs(y)) + 1;
             // int padding = max_width - num_digit;
@@ -83,57 +97,55 @@ void drawToVBar(void) {
     refresh();
 }
 
-
-
 /* --- Initialize Global Data --- */
-WINDOW* initializeNewWindow(int nrows, int ncols, int start_y, int start_x) {
-    WINDOW* new_win = newwin(nrows, ncols, start_y, start_x);
+WINDOW *initializeNewWindow(int nrows, int ncols, int start_y, int start_x)
+{
+    WINDOW *new_win = newwin(nrows, ncols, start_y, start_x);
     box(new_win, 0, 0);
     wrefresh(new_win);
     return new_win;
 }
 
-void initializeGlobalData(void) {
-    int term_ncols, term_nrows;                                         // Get terminal dimensions
+void initializeGlobalData(void)
+{
+    int term_ncols, term_nrows; // Get terminal dimensions
     getmaxyx(stdscr, term_nrows, term_ncols);
-                                                                        
-    editor.vbar = initializeNewWindow(term_nrows - STATUS_BAR_HEIGHT,       // Initialize vertical bar
+
+    editor.vbar = initializeNewWindow(term_nrows - STATUS_BAR_HEIGHT, // Initialize vertical bar
                                       VBAR_WIDTH,
-                                      0, 
+                                      0,
                                       0);
-    
+
     // TODO; Once the vertical bar works, come back to these windows
     // initializeNewWindow(&editor.screen,                                  // Initialize text-editor screen
-    //                     term_nrows - STATUS_BAR_HEIGHT, 
+    //                     term_nrows - STATUS_BAR_HEIGHT,
     //                     term_ncols - VBAR_WIDTH,
-    //                     0, 
+    //                     0,
     //                     VBAR_WIDTH);
     //
     // initializeNewWindow(&editor.sbar,                                    // Initialize status bar
-    //                     STATUS_BAR_HEIGHT, 
+    //                     STATUS_BAR_HEIGHT,
     //                     term_ncols,
-    //                     term_nrows - STATUS_BAR_HEIGHT, 
+    //                     term_nrows - STATUS_BAR_HEIGHT,
     //                     0);
 
     refresh();
 }
 
-
-
 /* --- Main --- */
 int main(void)
 {
-    initscr();                  // Initialize ncurses
+    initscr(); // Initialize ncurses
     raw();
     noecho();
     keypad(stdscr, TRUE);
-    
+
     initializeGlobalData();
     drawToVBar();
     processUserInput();
 
     refresh();
-    endwin();                   // Kill ncurses
+    endwin(); // Kill ncurses
 
     return 0;
 }
