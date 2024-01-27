@@ -21,8 +21,7 @@
 
 
 /* --- Global Data --- */
-struct globalData
-{
+struct globalData {
     WINDOW *vbar;   // Vertical bar: Includes line-numbers, git signs, tildes.
     WINDOW *screen; // Screen: Section where the user can interact with text.
     WINDOW *sbar;   // Status bar: Information for the user at the bottom of the screen.
@@ -30,9 +29,9 @@ struct globalData
 
 struct globalData editor;
 
+
 /* --- Program Failure --- */
-void die(char *message)
-{
+void die(char *message) {
     /*
      * Write error message to standard output
      * and exit with 1 status.
@@ -47,13 +46,12 @@ void die(char *message)
     exit(1);
 }
 
+
 /* --- Input --- */
-void processUserInput(void)
-{
+void processUserInput(void) {
     int ch;
     ch = getch();
-    while (ch != KEY_CTRL('q'))
-    {
+    while (ch != KEY_CTRL('q')) {
         int ypos, xpos;
         int max_y, max_x;
         getyx(stdscr, ypos, xpos);
@@ -85,9 +83,9 @@ void processUserInput(void)
     refresh();
 }
 
+
 /* --- Output --- */
-void drawToVBar(void)
-{
+void drawToVBar(void) {
     int x = 0, y, height;
     height = getmaxy(editor.vbar);
 
@@ -95,18 +93,14 @@ void drawToVBar(void)
 
     wmove(editor.vbar, 0, 0);
 
-    for (y = 0; y < height; ++y)
-    {
+    for (y = 0; y < height; ++y) {
         // TODO: Implement line numbers
         // char ln[10];
         // sprintf(ln, "%d", y);
 
-        if (y == 0)
-        {
+        if (y == 0) {
             mvwaddch(editor.vbar, y, x + 2, '~');
-        }
-        else
-        {
+        } else {
             // TODO: Implement line numbers
             // int num_digit = (int)log10(abs(y)) + 1;
             // int padding = max_width - num_digit;
@@ -119,17 +113,16 @@ void drawToVBar(void)
     refresh();
 }
 
+
 /* --- Initialize Global Data --- */
-WINDOW *initializeNewWindow(int nrows, int ncols, int start_y, int start_x)
-{
+WINDOW *initializeNewWindow(int nrows, int ncols, int start_y, int start_x) {
     WINDOW *new_win = newwin(nrows, ncols, start_y, start_x);
     box(new_win, 0, 0);
     wrefresh(new_win);
     return new_win;
 }
 
-void initializeGlobalData(void)
-{
+void initializeGlobalData(void) {
     int term_ncols, term_nrows; // Get terminal dimensions
     getmaxyx(stdscr, term_nrows, term_ncols);
 
@@ -154,9 +147,9 @@ void initializeGlobalData(void)
     refresh();
 }
 
+
 /* --- Main --- */
-int main(void)
-{
+int main(void) {
     // Initialize ncurses
     // Take keyboard input byte-by-byte
     initscr();
