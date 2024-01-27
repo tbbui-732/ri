@@ -18,6 +18,8 @@ void die(char *message)
      * and exit with 1 status.
      */
 
+
+    // Prevents terminal from acting strangely upon termination
     refresh();
     endwin();
 
@@ -135,7 +137,9 @@ void initializeGlobalData(void)
 /* --- Main --- */
 int main(void)
 {
-    initscr(); // Initialize ncurses
+    // Initialize ncurses
+    // Take keyboard input byte-by-byte
+    initscr();
     raw();
     noecho();
     keypad(stdscr, TRUE);
@@ -144,8 +148,8 @@ int main(void)
     drawToVBar();
     processUserInput();
 
+    // Terminate ncurses
     refresh();
-    endwin(); // Kill ncurses
-
+    endwin();
     return 0;
 }
