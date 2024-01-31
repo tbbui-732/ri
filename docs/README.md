@@ -19,7 +19,7 @@ I believe that this can ultimately lead to developers spending too much time
 customizing their configurations. 
 
 Ri's goal is to have a suite of development tools from modern text editors 
-straight from the get-go, no need for plugins.
+straight from the get-go (see "Ideas" for specifics).
 
 ## Ideas (to eventually implement)
 - Utilize key-bindings from VS code's vim package
@@ -27,6 +27,9 @@ straight from the get-go, no need for plugins.
     - Built-in feature to comment out blocks of code like (select + gc)
 - Xcode's vim status-bar
     - Shows user key-combinations with a snippet of what they do
+- Git signs and diffs
+    - Allow users to see changes and deletions made
+- LSP support 
 
 ## Current build
 - Implement cursor movement with base hjkl keys
