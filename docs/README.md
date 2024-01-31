@@ -15,16 +15,11 @@ key bindings for a seamless experience.
 
 ## Is this basically neovim? 
 While neovim is ultimately more mature and offers a wider range of customizability,
-I believe that this can cause analysis-by-paralysis for the end-user, ultimately 
-leading them to spend more time customizing their text-editor. 
+I believe that this can ultimately lead to developers spending too much time
+customizing their configurations. 
 
-Ri's goal is to default to a more user-friendly work environment, 
-to which you can see the specifics at *Ideas*.
-
-## Why rebuild from scratch?
-Because building things from scratch is fun! I don't expect
-ri to dominate other text-editors nor do I necessarily want it 
-to. 
+Ri's goal is to have a suite of development tools from modern text editors 
+straight from the get-go, no need for plugins.
 
 ## Ideas (to eventually implement)
 - Utilize key-bindings from VS code's vim package
@@ -32,7 +27,6 @@ to.
     - Built-in feature to comment out blocks of code like (select + gc)
 - Xcode's vim status-bar
     - Shows user key-combinations with a snippet of what they do
-- TODO: Think of more features to include
 
 ## Current build
 - Implement cursor movement with base hjkl keys
