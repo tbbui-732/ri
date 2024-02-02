@@ -37,7 +37,6 @@ void die(char *message) {
      * and exit with 1 status.
      */
 
-
     // Prevents terminal from acting strangely upon termination
     refresh();
     endwin();
@@ -79,7 +78,6 @@ void processUserInput(void) {
         move(ypos, xpos);
         ch = getch();
     }
-
     refresh();
 }
 
@@ -117,7 +115,7 @@ void drawToVBar(void) {
 /* --- Initialize Global Data --- */
 WINDOW *initializeNewWindow(int nrows, int ncols, int start_y, int start_x) {
     WINDOW *new_win = newwin(nrows, ncols, start_y, start_x);
-    box(new_win, 0, 0);
+    box(new_win, 1, 1);
     wrefresh(new_win);
     return new_win;
 }
