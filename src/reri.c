@@ -31,21 +31,18 @@ void destroy_curse_window(WINDOW *local_win) {
 }
 
 /* USER INTERFACE RELATED METHODS */
-// TODO: have this drawn to side_bar window
 void draw_tildes(WINDOW *side_bar_win, int side_bar_width, int status_bottom_pad) {
     int y_axis;
     for (y_axis = 0; y_axis < LINES - status_bottom_pad; y_axis++) {
         mvwprintw(side_bar_win, y_axis, 0, "~");
     }
-    move(0, side_bar_width);
     wrefresh(side_bar_win);
 }
 
-// TODO: HAVE THIS DISPLAY WITHIN STATUS_BAR WINDOW
-void draw_status_bar(void) {
-    mvprintw(LINES-1, 0, "<normal mode>"); // TODO: make this dynamic in the future
-    move(0, 1);
-    refresh();
+// TODO: have this display within status_bar window
+void draw_status_bar(WINDOW *stat_bar_win, int status_bottom_pad) {
+    mvwprintw(stat_bar_win, 0, 0, "---normal mode---"); // TODO: make this dynamic in the future
+    wrefresh(stat_bar_win);
 }
 
 /* INPUT RELATED METHODS */
@@ -86,7 +83,7 @@ int main(int argc, char *argv[]) {
 
     // Create window for sidebar (location for line number/tildes) and status bar (modes, writes, etc)
     WINDOW *side_bar, *status_bar;
-    const int STATUS_BOTTOM_PAD = 2;
+    const int STATUS_BOTTOM_PAD = 1;
     const int SIDE_BAR_WIDTH = 2; // tildes idx 0, line number idx 1 (2 total)
 
     // Must refresh stdscr before new windows can appear!
@@ -106,11 +103,10 @@ int main(int argc, char *argv[]) {
             LINES - STATUS_BOTTOM_PAD,
             0);
 
-    move(0, SIDE_BAR_WIDTH);
-
     // User defined methods go here
     draw_tildes(side_bar, SIDE_BAR_WIDTH, STATUS_BOTTOM_PAD);
-    // display_status_bar();
+    draw_status_bar(status_bar, STATUS_BOTTOM_PAD);
+    move(0, SIDE_BAR_WIDTH);
     process_user_input();
 
     // Kill all ncurses related structures here
