@@ -121,6 +121,7 @@ int main(int argc, char *argv[]) {
     // Kill all ncurses related structures here
     destroy_curse_window(side_bar);
     destroy_curse_window(status_bar);
+    destroy_curse_window(view_screen);
     refresh();
     endwin();
     return 0;
