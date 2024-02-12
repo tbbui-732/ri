@@ -1,10 +1,8 @@
 ri: ri.c
 	$(CC) ri.c -o ri -Wall -Wextra -pedantic -std=c99 -lncurses
 
+reri: reri.c
+	$(CC) reri.c -o reri -Wall -Wextra -pedantic -std=c99 -lncurses
+
 clean:
-	@if [ -e ri ]; then \
-        rm ri; \
-        echo "Executable removed"; \
-    else \
-        echo "Directory already clean"; \
-    fi
+	rm -f ri reri
