@@ -19,9 +19,17 @@ void die(char *message) {
 void draw_tildes(void) {
     int screen_height, y_axis;
     screen_height = getmaxy(stdscr);
-    for (y_axis = 0; y_axis < screen_height; y_axis++) {
+    for (y_axis = 0; y_axis < screen_height-1; y_axis++) { // NOTE: screen_height - 1 to account for status bar
         mvprintw(y_axis, 0, "~");
     }
+    refresh();
+}
+
+void display_status_bar(void) {
+    int screen_height;
+    screen_height = getmaxy(stdscr);
+    mvprintw(screen_height-1, 0, "<normal mode>");
+    move(0, 1);
     refresh();
 }
 
@@ -62,6 +70,7 @@ int main(int argc, char *argv[]) {
 
     // user defined methods go here
     draw_tildes();
+    display_status_bar();
     process_user_input();
 
     // kill ncurses here
