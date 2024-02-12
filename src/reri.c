@@ -28,7 +28,7 @@ void draw_tildes(void) {
 void display_status_bar(void) {
     int screen_height;
     screen_height = getmaxy(stdscr);
-    mvprintw(screen_height-1, 0, "<normal mode>");
+    mvprintw(screen_height-1, 0, "<normal mode>"); // TODO: make this dynamic in the future
     move(0, 1);
     refresh();
 }
@@ -68,13 +68,30 @@ int main(int argc, char *argv[]) {
     noecho();
     keypad(stdscr, TRUE);
 
+    // create window for sidebar (location for line number/tildes) and status bar (modes, writes, etc)
+    WINDOW *side_bar, *status_bar;
+    int screen_height = getmaxy(stdscr);
+    int screen_width = getmaxx(stdscr);
+
+    // TODO: why are my screens/windows not showing?!!!!!!
+    side_bar = newwin(screen_height, 1, 0, 0); // dim: screen height, 1 width | start: top-left corner
+    status_bar = newwin(1, screen_width, screen_height - 1, 0); // dim: 1 height, screen width | start: bottom-left corner
+    
+    // TODO: remove once windows actually work
+    box(side_bar, 0, 0);
+    box(status_bar, 0, 0);
+    wrefresh(side_bar);
+    wrefresh(status_bar);
+
     // user defined methods go here
-    draw_tildes();
-    display_status_bar();
+    // draw_tildes(); // TODO: uncomment this code once figure out why screens are not showing
+    // display_status_bar();
     process_user_input();
 
     // kill ncurses here
     refresh();
+    delwin(side_bar);
+    delwin(status_bar);
     endwin();
     return 0;
 }
