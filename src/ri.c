@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <ncurses.h>
+#include <string.h>
 #include <math.h>
 
 /* --- Constants --- */
@@ -41,7 +42,7 @@ void die(char *message) {
     refresh();
     endwin();
 
-    printf("%s\n", message);
+    perror(message);
     exit(1);
 }
 
@@ -78,6 +79,18 @@ void processUserInput(void) {
         move(ypos, xpos);
         ch = getch();
     }
+    refresh();
+}
+
+// TODO: open up a file so that editor can view it
+void openFileContent(char* fname) {
+    FILE* fptr = fopen(fname, "r");
+    
+    // FIXME: DONE FOR PRACTICE ONLY ; DELETE THIS ONCE DONE!
+    char buffer[100];
+    fgets(buffer, 100, fptr);
+    wprintw(editor.screen, buffer);
+    wrefresh(editor.screen);
     refresh();
 }
 
@@ -147,16 +160,24 @@ void initializeGlobalData(void) {
 
 
 /* --- Main --- */
-int main(void) {
+int main(int argc, char* argv[]) {
+
+    
+    // Check for file input
+    if (argc < 2) {
+        // If there are no files passed through, pull up some basic text --> "welcome to ri text editor" 
+        return 1;   /// exits the program for now
+    }
+
     // Initialize ncurses
-    // Take keyboard input byte-by-byte
     initscr();
     raw();
     noecho();
     keypad(stdscr, TRUE);
 
     initializeGlobalData();
-    drawToVBar();
+    drawToVBar();               // Draws tildes and later on line numbers...
+    openFileContent(argv[1]);   // Prints content of file to the screen
     processUserInput();
 
     // Terminate ncurses
