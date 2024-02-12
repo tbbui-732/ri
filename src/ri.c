@@ -1,186 +1,117 @@
-/* --- Libraries --- */
 #include <stdlib.h>
-#include <sys/termios.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <ncurses.h>
-#include <string.h>
-#include <math.h>
 
-/* --- Constants --- */
-#define TURN_ON 2000
-#define TURN_OFF 2001
-#define ESC_SEQ 27
-
-/* --- Definitions --- */
+/* DEFINITIONS */
 #define KEY_CTRL(key) ((key) & 0x1F)
-// #define KEY_END 360
 #define KEY_PGUP 339
 #define KEY_PGDN 338
-#define VBAR_WIDTH 3            // arbitrary value for now
-#define STATUS_BAR_HEIGHT 3     // arbitrary value for now
 
-
-/* --- Global Data --- */
-struct globalData {
-    WINDOW *vbar;   // Vertical bar: Includes line-numbers, git signs, tildes.
-    WINDOW *screen; // Screen: Section where the user can interact with text.
-    WINDOW *sbar;   // Status bar: Information for the user at the bottom of the screen.
-};
-
-struct globalData editor;
-
-
-/* --- Program Failure --- */
+/* GLOBAL METHODS */
 void die(char *message) {
-    /*
-     * Write error message to standard output
-     * and exit with 1 status.
-     */
-
-    // Prevents terminal from acting strangely upon termination
     refresh();
     endwin();
-
-    perror(message);
+    fprintf(stderr, "%s\n", message);
     exit(1);
 }
 
+/* WINDOW CREATION AND DELETION METHODS */
+WINDOW *create_curse_window(int win_height, int win_width, int start_y, int start_x) {
+    WINDOW *new_window;
+    new_window = newwin(win_height, win_width, start_y, start_x);
+    // box(new_window, 0, 0); // uncomment to visualize windows
+    wrefresh(new_window);
+    return new_window;
+}
 
-/* --- Input --- */
-void processUserInput(void) {
+void destroy_curse_window(WINDOW *local_win) {
+    wborder(local_win, ' ', ' ' , ' ', ' ', ' ', ' ', ' ', ' ');
+    wrefresh(local_win);
+    delwin(local_win);
+}
+
+/* USER INTERFACE RELATED METHODS */
+void draw_tildes(WINDOW *side_bar_win, int side_bar_width, int status_bottom_pad) {
+    int y_axis;
+    for (y_axis = 0; y_axis < LINES - status_bottom_pad; y_axis++) {
+        mvwprintw(side_bar_win, y_axis, 0, "~");
+    }
+    wrefresh(side_bar_win);
+}
+
+// TODO: have this display within status_bar window
+void draw_status_bar(WINDOW *stat_bar_win, int status_bottom_pad) {
+    mvwprintw(stat_bar_win, 0, 0, "---normal mode---"); // TODO: make this dynamic in the future
+    wrefresh(stat_bar_win);
+}
+
+/* INPUT RELATED METHODS */
+void process_user_input(void) {
     int ch;
     ch = getch();
     while (ch != KEY_CTRL('q')) {
-        int ypos, xpos;
-        int max_y, max_x;
+        int ypos, xpos; // cursor position
+        int max_y, max_x; // screen dimension
         getyx(stdscr, ypos, xpos);
         getmaxyx(stdscr, max_y, max_x);
 
-        if (ch == KEY_UP || ch == 'k')
-            --ypos;
-        else if (ch == KEY_DOWN || ch == 'j')
-            ++ypos;
-        else if (ch == KEY_LEFT || ch == 'h')
-            --xpos;
-        else if (ch == KEY_RIGHT || ch == 'l')
-            ++xpos;
-        else if (ch == KEY_HOME)
-            xpos = 0;
-        else if (ch == KEY_END)
-            xpos = max_x - 1;
-        else if (ch == KEY_PGUP)
-            ypos = 0;
-        else if (ch == KEY_PGDN)
-            ypos = max_y - 1;
-        else
-            printw("%c\n", ch);
+        if (ch == KEY_UP || ch == 'k')          --ypos;
+        else if (ch == KEY_DOWN  || ch == 'j')  ++ypos;
+        else if (ch == KEY_LEFT  || ch == 'h')  --xpos;
+        else if (ch == KEY_RIGHT || ch == 'l')  ++xpos;
+        else if (ch == KEY_HOME)                xpos = 0;
+        else if (ch == KEY_END)                 xpos = max_x - 1;
+        else if (ch == KEY_PGUP)                ypos = 0;
+        else if (ch == KEY_PGDN)                ypos = max_y - 1;
+        else printw("%c\n", ch);
 
         move(ypos, xpos);
+        refresh();
         ch = getch();
     }
     refresh();
 }
 
-// TODO: open up a file so that editor can view it
-void openFileContent(char* fname) {
-    FILE* fptr = fopen(fname, "r");
-    
-    // FIXME: DONE FOR PRACTICE ONLY ; DELETE THIS ONCE DONE!
-    char buffer[100];
-    fgets(buffer, 100, fptr);
-    wprintw(editor.screen, buffer);
-    wrefresh(editor.screen);
-    refresh();
-}
+/* START HERE */
+int main(int argc, char *argv[]) {
 
-
-/* --- Output --- */
-void drawToVBar(void) {
-    int x = 0, y, height;
-    height = getmaxy(editor.vbar);
-
-    int max_width = (int)log10(abs(height - 1)) + 1; // Maximum width of line numbers
-
-    wmove(editor.vbar, 0, 0);
-
-    for (y = 0; y < height; ++y) {
-        // TODO: Implement line numbers
-        // char ln[10];
-        // sprintf(ln, "%d", y);
-
-        if (y == 0) {
-            mvwaddch(editor.vbar, y, x + 2, '~');
-        } else {
-            // TODO: Implement line numbers
-            // int num_digit = (int)log10(abs(y)) + 1;
-            // int padding = max_width - num_digit;
-            // mvwprintw(editor.vbar, y, x, "%*s%s", padding, " ", ln);
-            mvwaddch(editor.vbar, y, x + max_width, '~');
-        }
-    }
-
-    wrefresh(editor.vbar);
-    refresh();
-}
-
-
-/* --- Initialize Global Data --- */
-WINDOW *initializeNewWindow(int nrows, int ncols, int start_y, int start_x) {
-    WINDOW *new_win = newwin(nrows, ncols, start_y, start_x);
-    box(new_win, 1, 1);
-    wrefresh(new_win);
-    return new_win;
-}
-
-void initializeGlobalData(void) {
-    int term_ncols, term_nrows; // Get terminal dimensions
-    getmaxyx(stdscr, term_nrows, term_ncols);
-
-    editor.vbar = initializeNewWindow(term_nrows - STATUS_BAR_HEIGHT, // Initialize vertical bar
-            VBAR_WIDTH,
-            0,
-            0);
-
-    // TODO; Once the vertical bar works, come back to these windows
-    // initializeNewWindow(&editor.screen,                                  // Initialize text-editor screen
-    //                     term_nrows - STATUS_BAR_HEIGHT,
-    //                     term_ncols - VBAR_WIDTH,
-    //                     0,
-    //                     VBAR_WIDTH);
-    //
-    // initializeNewWindow(&editor.sbar,                                    // Initialize status bar
-    //                     STATUS_BAR_HEIGHT,
-    //                     term_ncols,
-    //                     term_nrows - STATUS_BAR_HEIGHT,
-    //                     0);
-
-    refresh();
-}
-
-
-/* --- Main --- */
-int main(int argc, char* argv[]) {
-
-    
-    // Check for file input
-    if (argc < 2) {
-        // If there are no files passed through, pull up some basic text --> "welcome to ri text editor" 
-        return 1;   /// exits the program for now
-    }
-
-    // Initialize ncurses
+    // initialize ncurses here
     initscr();
-    raw();
+    raw(); 
     noecho();
     keypad(stdscr, TRUE);
 
-    initializeGlobalData();
-    drawToVBar();               // Draws tildes and later on line numbers...
-    openFileContent(argv[1]);   // Prints content of file to the screen
-    processUserInput();
+    // Create window for sidebar (location for line number/tildes) and status bar (modes, writes, etc)
+    WINDOW *side_bar, *status_bar;
+    const int STATUS_BOTTOM_PAD = 1;
+    const int SIDE_BAR_WIDTH = 2; // tildes idx 0, line number idx 1 (2 total)
 
-    // Terminate ncurses
+    // Must refresh stdscr before new windows can appear!
+    refresh(); 
+
+    // Initialize sidebar window
+    side_bar = create_curse_window(
+            LINES - STATUS_BOTTOM_PAD, // STATUS_BOTTOM_PAD accounts for status_bar height
+            SIDE_BAR_WIDTH,
+            0, 
+            0); 
+
+    // Initialize status bar window
+    status_bar = create_curse_window(
+            STATUS_BOTTOM_PAD,
+            COLS,
+            LINES - STATUS_BOTTOM_PAD,
+            0);
+
+    // User defined methods go here
+    draw_tildes(side_bar, SIDE_BAR_WIDTH, STATUS_BOTTOM_PAD);
+    draw_status_bar(status_bar, STATUS_BOTTOM_PAD);
+    move(0, SIDE_BAR_WIDTH);
+    process_user_input();
+
+    // Kill all ncurses related structures here
+    destroy_curse_window(side_bar);
+    destroy_curse_window(status_bar);
     refresh();
     endwin();
     return 0;
