@@ -55,6 +55,8 @@ void process_user_input(void) {
         getyx(stdscr, ypos, xpos);
         getmaxyx(stdscr, max_y, max_x);
 
+
+        //TODO create a function to stop cursor movement (maybe there's a way to do this with ncurses already?)
         if (ch == KEY_UP || ch == 'k')           // move up
             --ypos;
         else if (ch == KEY_DOWN  || ch == 'j')   // move down
