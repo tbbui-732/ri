@@ -32,7 +32,7 @@ void destroy_curse_window(WINDOW *local_win) {
 
 /* USER INTERFACE RELATED METHODS */
 // TODO: draw line numbers... eventually...
-void draw_tildes(WINDOW *side_bar_win, int side_bar_width, int status_bottom_pad) {
+void draw_tildes(WINDOW *side_bar_win, int status_bottom_pad) {
     int y_axis;
     for (y_axis = 0; y_axis < LINES - status_bottom_pad; y_axis++) {
         mvwprintw(side_bar_win, y_axis, 0, "~");
@@ -40,7 +40,7 @@ void draw_tildes(WINDOW *side_bar_win, int side_bar_width, int status_bottom_pad
     wrefresh(side_bar_win);
 }
 
-void draw_status_bar(WINDOW *stat_bar_win, int status_bottom_pad) {
+void draw_status_bar(WINDOW *stat_bar_win) {
     mvwprintw(stat_bar_win, 0, 0, "---normal mode---"); // TODO: make this dynamic in the future
     wrefresh(stat_bar_win);
 }
@@ -55,15 +55,24 @@ void process_user_input(void) {
         getyx(stdscr, ypos, xpos);
         getmaxyx(stdscr, max_y, max_x);
 
-        if (ch == KEY_UP || ch == 'k')          --ypos;
-        else if (ch == KEY_DOWN  || ch == 'j')  ++ypos;
-        else if (ch == KEY_LEFT  || ch == 'h')  --xpos;
-        else if (ch == KEY_RIGHT || ch == 'l')  ++xpos;
-        else if (ch == KEY_HOME)                xpos = 0;
-        else if (ch == KEY_END)                 xpos = max_x - 1;
-        else if (ch == KEY_PGUP)                ypos = 0;
-        else if (ch == KEY_PGDN)                ypos = max_y - 1;
-        else printw("%c\n", ch);
+        if (ch == KEY_UP || ch == 'k')           // move up
+            --ypos;
+        else if (ch == KEY_DOWN  || ch == 'j')   // move down
+            ++ypos;
+        else if (ch == KEY_LEFT  || ch == 'h')   // move left
+            --xpos;
+        else if (ch == KEY_RIGHT || ch == 'l')   // move right
+            ++xpos;
+        else if (ch == KEY_HOME)                
+            xpos = 0;
+        else if (ch == KEY_END)                 
+            xpos = max_x - 1;
+        else if (ch == KEY_PGUP)                
+            ypos = 0;
+        else if (ch == KEY_PGDN)                
+            ypos = max_y - 1;
+        else 
+            printw("%c\n", ch);
 
         move(ypos, xpos);
         refresh();
@@ -113,8 +122,8 @@ int main(int argc, char *argv[]) {
 
 
     // User defined methods go here
-    draw_tildes(side_bar, SIDE_BAR_WIDTH, STATUS_BOTTOM_PAD);
-    draw_status_bar(status_bar, STATUS_BOTTOM_PAD);
+    draw_tildes(side_bar, STATUS_BOTTOM_PAD);
+    draw_status_bar(status_bar);
     move(0, SIDE_BAR_WIDTH);
     process_user_input();
 
