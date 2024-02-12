@@ -73,7 +73,7 @@ void process_user_input(void) {
 }
 
 /* START HERE */
-// TODO: create a new window for the actual editing/viewing and don't allow cursor to overlap status_bar or side_bar
+// TODO: don't allow cursor to overlap status_bar or side_bar
 // TODO: read in a file and display it; allow user to scroll up and down
 int main(int argc, char *argv[]) {
 
@@ -83,8 +83,7 @@ int main(int argc, char *argv[]) {
     noecho();
     keypad(stdscr, TRUE);
 
-    // Create window for sidebar (location for line number/tildes) and status bar (modes, writes, etc)
-    WINDOW *side_bar, *status_bar;
+    WINDOW *side_bar, *status_bar, *view_screen;
     const int STATUS_BOTTOM_PAD = 1;
     const int SIDE_BAR_WIDTH = 2; // tildes idx 0, line number idx 1 (2 total)
 
@@ -105,7 +104,13 @@ int main(int argc, char *argv[]) {
             LINES - STATUS_BOTTOM_PAD,
             0);
 
-    
+    // Initialize view_screen window
+    view_screen = create_curse_window(
+            LINES - STATUS_BOTTOM_PAD,
+            COLS - SIDE_BAR_WIDTH,
+            0,
+            SIDE_BAR_WIDTH);
+
 
     // User defined methods go here
     draw_tildes(side_bar, SIDE_BAR_WIDTH, STATUS_BOTTOM_PAD);
