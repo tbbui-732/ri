@@ -10,6 +10,10 @@ to make contributions in areas you deem desirable.
 - Const variables: ALL_CAPS
 - Pointer variables: Add a p_ to the prefix. For global variables it would be gp_var, for local variables p_var, for const variables p_VAR. if far pointers are used then use an fp_ instead of p_.
 
+## Functions
+- Function name: PascalCase
+- Function attributes: snake_case
+
 ## Structs
 - Structs: ModulePascalCase
 - Struct member variables: snake_case
@@ -20,3 +24,6 @@ to make contributions in areas you deem desirable.
 
 ## Macros
 - Macros: PascalCase
+
+## Others
+- Default to snake_case, otherwise uppercase SNAKE_CASE for global/constants
