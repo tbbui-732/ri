@@ -31,6 +31,7 @@ void destroy_curse_window(WINDOW *local_win) {
 }
 
 /* USER INTERFACE RELATED METHODS */
+// TODO: draw line numbers... eventually...
 void draw_tildes(WINDOW *side_bar_win, int side_bar_width, int status_bottom_pad) {
     int y_axis;
     for (y_axis = 0; y_axis < LINES - status_bottom_pad; y_axis++) {
@@ -39,7 +40,6 @@ void draw_tildes(WINDOW *side_bar_win, int side_bar_width, int status_bottom_pad
     wrefresh(side_bar_win);
 }
 
-// TODO: have this display within status_bar window
 void draw_status_bar(WINDOW *stat_bar_win, int status_bottom_pad) {
     mvwprintw(stat_bar_win, 0, 0, "---normal mode---"); // TODO: make this dynamic in the future
     wrefresh(stat_bar_win);
@@ -73,6 +73,8 @@ void process_user_input(void) {
 }
 
 /* START HERE */
+// TODO: create a new window for the actual editing/viewing and don't allow cursor to overlap status_bar or side_bar
+// TODO: read in a file and display it; allow user to scroll up and down
 int main(int argc, char *argv[]) {
 
     // initialize ncurses here
@@ -102,6 +104,8 @@ int main(int argc, char *argv[]) {
             COLS,
             LINES - STATUS_BOTTOM_PAD,
             0);
+
+    
 
     // User defined methods go here
     draw_tildes(side_bar, SIDE_BAR_WIDTH, STATUS_BOTTOM_PAD);
